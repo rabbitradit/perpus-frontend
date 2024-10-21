@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './slice/authSlice';
-import storage from 'redux-persist/lib/storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { persistStore, persistReducer } from 'redux-persist';
 
 const persistConfig = {
     key: 'commerce', 
-    storage, 
+    storage: AsyncStorage, 
 }
 
 const persistedReducer = persistReducer(persistConfig, authReducer)
