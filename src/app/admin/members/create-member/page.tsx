@@ -7,6 +7,7 @@ import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { IValues } from '@/features/members/types'
 import { useMutateCreateMemberHook } from '@/features/members/hooks/useMutateCreateMemberHook'
+import { useRef } from 'react'
 
 export default function CreateMember() {
 
@@ -64,7 +65,7 @@ export default function CreateMember() {
                   <section key={index} className='flex flex-col'>
                     <h1 className='text-blue-400 text-lg'>{title}</h1>
                     <label className="input input-bordered border-gray-300 flex items-center gap-2">
-                      <Field name={name} type="text" className="grow" placeholder='Type Here' />
+                      <Field ref={name} name={name} type="text" className="grow" placeholder='Type Here' />
                     </label>
                     <ErrorMessage name={name} component={'div'} className='text-red-600 text-sm'/>
                   </section>

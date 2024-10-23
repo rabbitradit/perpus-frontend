@@ -4,20 +4,37 @@ import axios from 'axios'
 import React, { useEffect } from 'react'
 import { IoSearchSharp } from 'react-icons/io5'
 import Link from 'next/link'
+import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 
 const MembersPage = () => {
+const [page, setPage] = useState(1)
+const [limitData, setLimitData] = useState(2)
 
-    const getMembers = async() => {
-        try {
-            return await axios.get('http://localhost:3100/members')
-        } catch (error) {
-            console.log(error)
-        }
+const {data: dataMembers} = useQuery({
+    queryKey: ['getMembers', page, limitData],
+    queryFn: async() => {
+        const res = await axios.get('http://localhost:3100/members', {
+            params: {
+                page,
+                limit_data: limitData
+            }
+        })
+        console.log(res)
+        return res.data.data.members
     }
+})
+//     const getMembers = async() => {
+//         try {
+//             return await axios.get('http://localhost:3100/members')
+//         } catch (error) {
+//             console.log(error)
+//         }
+//     }
 
-  useEffect(() => {
-    getMembers()
-  },[])
+//   useEffect(() => {
+//     getMembers()
+//   },[])
     
   return (
     <main className="grid grid-cols-1 gap-10 ">
@@ -32,36 +49,22 @@ const MembersPage = () => {
             </Link>
         </section>
         <section className='hidden md:flex flex-col border-2 border-gray-300 rounded-md'>
-            <div className='grid grid-cols-4 p-3 text-center bg-gray-300 font-bold text-blue-400'>
-                <h1>Member ID</h1>
+            <div className='grid grid-cols-3 p-3 text-center bg-gray-300 font-bold text-blue-400'>
+                <h1>Number</h1>
                 <h1>Name</h1>
                 <h1>Email</h1>
-                <h1>Location</h1>
             </div>
-            <div className='grid grid-cols-4 text-black'>
-                <p className='border-r-2 border-r-gray-300 box-border p-3 h-12'></p>
-                <p className='border-r-2 border-r-gray-300 box-border p-3 h-12'></p>
-                <p className='border-r-2 border-r-gray-300 box-border p-3 h-12'></p>
-                <p className='box-border p-3 h-12'></p>
-            </div>
-            <div className='grid grid-cols-4 text-black border-t-2 border-t-gray-300'>
-                <p className='border-r-2 border-r-gray-300 box-border p-3 h-12'></p>
-                <p className='border-r-2 border-r-gray-300 box-border p-3 h-12'></p>
-                <p className='border-r-2 border-r-gray-300 box-border p-3 h-12'></p>
-                <p className='box-border p-3 h-12'></p>
-            </div>
-            <div className='grid grid-cols-4 text-black border-t-2 border-t-gray-300'>
-                <p className='border-r-2 border-r-gray-300 box-border p-3 h-12'></p>
-                <p className='border-r-2 border-r-gray-300 box-border p-3 h-12'></p>
-                <p className='border-r-2 border-r-gray-300 box-border p-3 h-12'></p>
-                <p className='box-border p-3 h-12'></p>
-            </div>
-            <div className='grid grid-cols-4 text-black border-t-2 border-t-gray-300'>
-                <p className='border-r-2 border-r-gray-300 box-border p-3 h-12'></p>
-                <p className='border-r-2 border-r-gray-300 box-border p-3 h-12'></p>
-                <p className='border-r-2 border-r-gray-300 box-border p-3 h-12'></p>
-                <p className='box-border p-3 h-12'></p>
-            </div>
+            {
+                dataMembers?.map((item: any, index: number) => {
+                    return(
+                        <div key={index} className='grid grid-cols-3 text-left text-black border-t-2 border-t-gray-300'>
+                            <p className='border-r-2 border-r-gray-300 text-center box-border p-3 h-12'>{index + 1}</p>
+                            <p className='border-r-2 border-r-gray-300 box-border p-3 h-12'>{item.first_name + ' ' + item.last_name}</p>
+                            <p className='box-border p-3 h-12'>{item.email}</p>
+                        </div>
+                    )
+                })
+            }
         </section>
         <section className='md:hidden flex flex-col border-2 border-gray-300 rounded-md'>
             <div className='grid grid-cols-3 p-3 text-center bg-gray-300 font-bold text-blue-400'>
